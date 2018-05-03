@@ -2,6 +2,9 @@ pipeline {
   agent {
     label 'jdk8'
   }
+    libraries {
+    lib("SharedLibs")
+  }
   stages {
     stage('Say Hello') {
       steps {
@@ -17,29 +20,29 @@ pipeline {
         checkpoint 'Checkpoint'
       }
     }
-    stage('TestingOLD') {
-      failFast true
-      parallel {
-        stage('Java 8') {
-          agent {
-            label 'jdk8'
-          }
-          steps {
-            sh 'java -version'
-            sleep(time: 10, unit: 'SECONDS')
-          }
-        }
-        stage('Java 9') {
-          agent {
-            label 'jdk9'
-          }
-          steps {
-            sh 'java -version'
-            sleep(time: 20, unit: 'SECONDS')
-          }
-        }
-      }
-    }
+    # stage('TestingOLD') {
+    #   failFast true
+    #   parallel {
+    #     stage('Java 8') {
+    #       agent {
+    #         label 'jdk8'
+    #       }
+    #       steps {
+    #         sh 'java -version'
+    #         sleep(time: 10, unit: 'SECONDS')
+    #       }
+    #     }
+    #     stage('Java 9') {
+    #       agent {
+    #         label 'jdk9'
+    #       }
+    #       steps {
+    #         sh 'java -version'
+    #         sleep(time: 20, unit: 'SECONDS')
+    #       }
+    #     }
+    #   }
+    # }
 stage('Testing') {
         parallel {
           stage('Java 9') {
@@ -59,6 +62,11 @@ stage('Testing') {
             }
           }
         }
+      }
+      stage('Shared Lib') {
+         steps {
+             helloWorld("Jenkins")
+         }
       }
     stage('Get Kernel') {
       steps {
